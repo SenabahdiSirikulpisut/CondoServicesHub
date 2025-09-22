@@ -12,7 +12,7 @@ body { font-family:sans-serif; display:flex; justify-content:center; align-items
 .node:active { transform:scale(0.9); box-shadow:0 2px 4px rgba(0,0,0,0.2); }
 .node:hover { transform:scale(1.1); box-shadow:0 6px 12px rgba(0,0,0,0.3); }
 @keyframes float { 0%{transform:translateY(0);} 50%{transform:translateY(-5px);} 100%{transform:translateY(0);} }
-#popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.2); max-width:300px; text-align:center; display:none; }
+#popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.2); max-width:300px; text-align:center; display:none; z-index:1000; }
 #popup a { display:block; margin-top:10px; text-decoration:none; background:#00ccff; color:white; padding:8px 12px; border-radius:5px; }
 #popup button { margin-top:10px; padding:5px 10px; border:none; border-radius:5px; background:#ccc; cursor:pointer; }
 </style>
@@ -37,14 +37,14 @@ const centerX = 175;
 const centerY = 175;
 const radius = 140;
 
-// Replace this with your Google Apps Script web app URL
+// Replace with your Google Apps Script Web App URL
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxBd2eqYVZIlrwJ3dNVXxGulBH1ZLmU6JQP0sHF2JX4n2-4cM_tTa7eezp_3IWyPdeljQ/exec";
 
-fetch(GAS_URL)
+// Fetch services dynamically
+fetch(`${GAS_URL}?t=${new Date().getTime()}`) // prevent caching
   .then(res => res.json())
   .then(services => {
     const angleStep = (2 * Math.PI) / services.length;
-
     services.forEach((service, index) => {
       const angle = index * angleStep;
       const x = centerX + radius * Math.cos(angle) - 35;
@@ -70,9 +70,7 @@ fetch(GAS_URL)
       container.appendChild(node);
     });
   })
-  .catch(err => {
-    console.error("Failed to load services:", err);
-  });
+  .catch(err => console.error("Failed to load services:", err));
 
 function closePopup() {
   popup.style.display = "none";
