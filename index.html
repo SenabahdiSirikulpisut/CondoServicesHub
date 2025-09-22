@@ -28,6 +28,7 @@ body { font-family:sans-serif; background:#f9f9f9; display:flex; justify-content
 </div>
 
 <script>
+// Center coordinates & radius
 const container = document.getElementById("nodes-container");
 const popup = document.getElementById("popup");
 const popupContent = document.getElementById("popup-content");
@@ -35,38 +36,41 @@ const centerX = 200;
 const centerY = 200;
 const radius = 150;
 
-// Services passed from backend
-const services = <?= JSON.stringify(services) ?>;
+// Function called by JSONP
+function handleServices(services) {
+  const angleStep = (2 * Math.PI) / services.length;
 
-// Place nodes in a circle around center
-const angleStep = (2 * Math.PI) / services.length;
-services.forEach((service, index) => {
-  const angle = index * angleStep;
-  const x = centerX + radius * Math.cos(angle) - 35;
-  const y = centerY + radius * Math.sin(angle) - 35;
+  services.forEach((service, index) => {
+    const angle = index * angleStep;
+    const x = centerX + radius * Math.cos(angle) - 35;
+    const y = centerY + radius * Math.sin(angle) - 35;
 
-  const node = document.createElement("div");
-  node.className = "node";
-  node.style.left = x + "px";
-  node.style.top = y + "px";
-  node.innerHTML = service.icon;
+    const node = document.createElement("div");
+    node.className = "node";
+    node.style.left = x + "px";
+    node.style.top = y + "px";
+    node.innerHTML = service.icon;
 
-  node.onclick = () => {
-    popupContent.innerHTML = `
-      <h3>${service.name}</h3>
-      <p>${service.instructions}</p>
-      <a href="${service.link}" target="_blank">
-        ${service.type === "direct" ? "Go to Service" : "Open App"}
-      </a>`;
-    popup.style.display = "block";
-  };
+    node.onclick = () => {
+      popupContent.innerHTML = `
+        <h3>${service.name}</h3>
+        <p>${service.instructions}</p>
+        <a href="${service.link}" target="_blank">
+          ${service.type === "direct" ? "Go to Service" : "Open App"}
+        </a>`;
+      popup.style.display = "block";
+    };
 
-  container.appendChild(node);
-});
-
-function closePopup() {
-  popup.style.display = "none";
+    container.appendChild(node);
+  });
 }
+
+function closePopup() { popup.style.display = "none"; }
+
+// Load the backend JSONP
+const script = document.createElement("script");
+script.src = "https://script.google.com/macros/s/AKfycbz_FecCawyMHTGm8-lR0iQTnQoPnY9-h_qTWV3mFR61k6uuavkXAlMPisCz49WLy1Nf/exec?callback=handleServices";
+document.body.appendChild(script);
 </script>
 
 </body>
