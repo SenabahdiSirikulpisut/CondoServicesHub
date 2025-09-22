@@ -38,6 +38,11 @@ const radius = 150;
 
 // Function called by JSONP
 function handleServices(services) {
+  if (!services || !services.length) {
+    alert("No services loaded.");
+    return;
+  }
+
   const angleStep = (2 * Math.PI) / services.length;
 
   services.forEach((service, index) => {
@@ -69,7 +74,7 @@ function closePopup() { popup.style.display = "none"; }
 
 // Load the backend JSONP
 const script = document.createElement("script");
-script.src = "https://script.google.com/macros/s/AKfycbxiv6ZNa9CvwBrB2CftM-0EqHhq6QynVy8malNf--1AkgAaO9d1qFqG7qVTfzsS2PYI/exec?callback=handleServices";
+script.src = "https://script.google.com/macros/s/AKfycbxiv6ZNa9CvwBrB2CftM-0EqHhq6QynVy8malNf--1AkgAaO9d1qFqG7qVTfzs/exec?callback=handleServices";
 document.body.appendChild(script);
 </script>
 
